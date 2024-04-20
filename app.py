@@ -63,7 +63,7 @@ def gen_frames():  # generate frame by frame from camera
         probabilityValue =np.amax(predictions)
         if probabilityValue > threshold:
         #print(getCalssName(classIndex))
-            cv2.putText(frame,str(classIndex)+" "+str(getClassName2(classIndex)), (120, 35), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame,str(getClassName2(classIndex)), (120, 35), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
             cv2.putText(frame, str(round(probabilityValue*100,2) )+"%", (180, 75), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
         # cv2.imshow("Result", frame)
         if success:
@@ -71,7 +71,7 @@ def gen_frames():  # generate frame by frame from camera
                 capture=0
                 now = datetime.datetime.now()
                 p = os.path.sep.join(['shots', "shot_{}.png".format(str(now).replace(":",''))])
-                cv2.imwrite(p, frame)
+                cv2.imwrite(p,frame)
                 
             try:
                 ret, buffer = cv2.imencode('.jpg', frame)
@@ -234,9 +234,9 @@ def model_predict(img_path, model):
     predicted_probabilities = model.predict(img)  # Get predicted probabilities for each class
     classIndex = np.argmax(predicted_probabilities)  # Get the index of the class with highest probability
     probabilityValue =np.amax(predicted_probabilities)
-    if probabilityValue > threshold:
+    if probabilityValue > 0.80:
         preds = getClassName(classIndex)
-        return preds +' '+str(round(probabilityValue*100,2) )
+        return preds
     else:
         return "Cannot Detect the Sign"
 
