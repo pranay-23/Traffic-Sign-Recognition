@@ -42,7 +42,7 @@ except OSError as error:
 net = cv2.dnn.readNetFromCaffe('saved_model/deploy.prototxt.txt', 'saved_model/res10_300x300_ssd_iter_140000.caffemodel')
 
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 
 
 def gen_frames():  # generate frame by frame from camera
@@ -60,11 +60,12 @@ def gen_frames():  # generate frame by frame from camera
         predictions = model.predict(img)
         # classIndex = model.predict_classes(img)
         classIndex=np.argmax(predictions)
-        probabilityValue =np.amax(predictions)
+        probabilityValue = np.amax(predictions)
         if probabilityValue > threshold:
         #print(getCalssName(classIndex))
-            cv2.putText(frame,str(getClassName2(classIndex)), (120, 35), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
-            cv2.putText(frame, str(round(probabilityValue*100,2) )+"%", (180, 75), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
+            if classIndex!=15 and classIndex!=13:
+                cv2.putText(frame,str(getClassName2(classIndex)), (120, 35), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
+                cv2.putText(frame, str(round(probabilityValue*100,2) )+"%", (180, 75), font, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
         # cv2.imshow("Result", frame)
         if success:
             if(capture):
@@ -110,7 +111,7 @@ def tasks():
                 cv2.destroyAllWindows()
                 
             else:
-                camera = cv2.VideoCapture(0)
+                camera = cv2.VideoCapture(1)
                 switch=1                   
                  
     elif request.method=='GET':
@@ -151,7 +152,7 @@ def getClassName(classNo):
     elif classNo == 19: return 'Dangerous curve to the left - Warns of a dangerous curve to the left.'
     elif classNo == 20: return 'Dangerous curve to the right - Warns of a dangerous curve to the right.'
     elif classNo == 21: return 'Double curve - Warns of a double curve ahead.'
-    elif classNo == 22: return 'Bumpy road - Indicates a bumpy road surface.'
+    elif classNo == 22: return 'Bump Ahead - Indicates a bumpy road surface.'
     elif classNo == 23: return 'Slippery road - Warns of slippery road conditions.'
     elif classNo == 24: return 'Road narrows on the right - Indicates a narrowing road ahead.'
     elif classNo == 25: return 'Road work - Warns of road construction or maintenance.'
@@ -196,7 +197,7 @@ def getClassName2(classNo):
     elif classNo == 19: return 'Dangerous curve to the left'
     elif classNo == 20: return 'Dangerous curve to the right'
     elif classNo == 21: return 'Double curve'
-    elif classNo == 22: return 'Bumpy road'
+    elif classNo == 22: return 'Bump Ahead'
     elif classNo == 23: return 'Slippery road'
     elif classNo == 24: return 'Road narrows on the right'
     elif classNo == 25: return 'Road work'
